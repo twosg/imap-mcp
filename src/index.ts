@@ -80,11 +80,8 @@ export async function main(): Promise<void> {
 }
 
 if (!process.env.VITEST) {
-  console.error("[imap-mcp] starting...")
-  main()
-    .then(() => console.error("[imap-mcp] server running"))
-    .catch((error: Error) => {
-      console.error(`[imap-mcp] fatal: ${error.message}`)
-      process.exitCode = 1
-    })
+  main().catch((error: Error) => {
+    console.error(error.message)
+    process.exitCode = 1
+  })
 }
