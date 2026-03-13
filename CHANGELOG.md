@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/twosg/imap-mcp/compare/v1.0.0...v1.1.0) (2026-03-13)
+
+
+### Features
+
+* fix mcpb bundle compatibility and improve error handling ([0aa2e4b](https://github.com/twosg/imap-mcp/commit/0aa2e4b6f096d4f67a46c4e55c62c305696b9888))
+
 # 1.0.0 (2026-03-13)
 
 
