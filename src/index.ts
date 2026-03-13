@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import "dotenv/config"
-import Imap from "imap"
+import { ImapFlow } from "imapflow"
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 
@@ -9,24 +9,51 @@ import { registerCreateDraft } from "./tools/create-draft.js"
 
 const server = new McpServer({
   name: "imap-mcp",
-  version: "0.1.0",
+  version: "1.0.0",
 })
 
-export async function main() {
-  const imapConfig = {
-    user: process.env.IMAP_USERNAME || "",
-    password: process.env.IMAP_PASSWORD || "",
-    host: process.env.IMAP_HOST || "",
-    port: parseInt(process.env.IMAP_PORT || "993"),
-    tls: process.env.IMAP_USE_SSL === "true",
-    tlsOptions: { rejectUnauthorized: false },
+function validateConfig(): {
+  host: string
+  port: number
+  secure: boolean
+  auth: { user: string; pass: string }
+  tls: { rejectUnauthorized: boolean }
+  logger: false
+} {
+  const requiredVars = ["IMAP_HOST", "IMAP_USERNAME", "IMAP_PASSWORD"] as const
+
+  for (const envVar of requiredVars) {
+    if (!process.env[envVar]) {
+      throw new Error(`Missing required environment variable: ${envVar}`)
+    }
   }
 
-  const client = new Imap(imapConfig)
+  const port = parseInt(process.env.IMAP_PORT || "993")
+  if (isNaN(port) || port < 1 || port > 65535) {
+    throw new Error(`Invalid IMAP_PORT: must be a number between 1 and 65535`)
+  }
+
+  return {
+    host: process.env.IMAP_HOST!,
+    port,
+    secure: process.env.IMAP_USE_SSL === "true",
+    auth: {
+      user: process.env.IMAP_USERNAME!,
+      pass: process.env.IMAP_PASSWORD!,
+    },
+    tls: {
+      rejectUnauthorized: process.env.IMAP_REJECT_UNAUTHORIZED !== "false",
+    },
+    logger: false,
+  }
+}
+
+export async function main(): Promise<void> {
+  const imapConfig = validateConfig()
+  const client = new ImapFlow(imapConfig)
 
   registerCreateDraft(client, server)
 
-  // Start receiving messages on stdin and sending messages on stdout
   const transport = new StdioServerTransport()
   await server.connect(transport)
 }

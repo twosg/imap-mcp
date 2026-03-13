@@ -1,69 +1,54 @@
-import Imap from "imap"
-import { z } from "zod"
+import { ImapFlow } from "imapflow"
+import { z } from "zod/v4"
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 
-export function registerCreateDraft(client: Imap, server: McpServer) {
-  server.tool(
+const inputSchema = z.object({
+  to: z.email().max(254),
+  subject: z
+    .string()
+    .max(998)
+    .trim()
+    .refine((s) => !/[\r\n]/.test(s), "Subject must not contain line breaks"),
+  body: z.string().max(1_000_000),
+  from: z.email().max(254).optional(),
+})
+
+export function registerCreateDraft(client: ImapFlow, server: McpServer): void {
+  server.registerTool(
     "create-draft",
-    "Creates a draft email message",
     {
-      to: z.string(),
-      subject: z.string(),
-      body: z.string(),
-      from: z.string().optional(),
+      description: "Creates a draft email message",
+      inputSchema,
     },
     async ({ to, subject, body, from }) => {
-      return new Promise((resolve, reject) => {
-        client.once("ready", () => {
-          client.openBox("INBOX.Drafts", false, (err) => {
-            if (err) {
-              // Try opening "Drafts" folder instead
-              client.openBox("Drafts", false, (err2) => {
-                if (err2) {
-                  reject(
-                    new Error(`Failed to open drafts folder: ${err2.message}`),
-                  )
-                  return
-                }
-                createDraftMessage()
-              })
-              return
-            }
-            createDraftMessage()
-          })
+      const draftsFolder = process.env.IMAP_DRAFTS_FOLDER || "INBOX.Drafts"
+      const sender = from || process.env.IMAP_USERNAME || ""
+      const message = [
+        `From: ${sender}`,
+        `To: ${to}`,
+        `Subject: ${subject}`,
+        "",
+        body,
+      ].join("\r\n")
 
-          function createDraftMessage() {
-            const message = [
-              `From: ${from || process.env.IMAP_USERNAME || ""}`,
-              `To: ${to}`,
-              `Subject: ${subject}`,
-              "",
-              body,
-            ].join("\r\n")
-
-            client.append(message, { flags: ["\\Draft"] }, (err) => {
-              if (err) {
-                reject(new Error(`Failed to create draft: ${err.message}`))
-                return
-              }
-              resolve({
-                content: [
-                  {
-                    type: "text",
-                    text: `Draft created successfully for ${to}`,
-                  },
-                ],
-              })
-            })
-          }
-        })
-
-        client.once("error", (err: Error) => {
-          reject(new Error(`IMAP connection error: ${err.message}`))
-        })
-
-        client.connect()
-      })
+      try {
+        await client.connect()
+        try {
+          await client.append(draftsFolder, message, ["\\Draft"])
+        } catch {
+          await client.append("Drafts", message, ["\\Draft"])
+        }
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Draft created successfully for ${to}`,
+            },
+          ],
+        }
+      } finally {
+        await client.logout()
+      }
     },
   )
 }
