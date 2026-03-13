@@ -5,11 +5,13 @@
 📧 An IMAP Model Context Protocol (MCP) server to expose IMAP operations as tools for AI assistants.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-purple.svg)](https://modelcontextprotocol.io)
-[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 </div>
+
+## Fork of dominik1001/imap-mcp
+
+This MCP-Server was originally created by [dominik1001](https://github.com/dominik1001/imap-mcp) and has been forked for customization and additional features.
 
 ## ✨ Features
 
@@ -23,7 +25,7 @@
 - **IMAP Integration**: Connect to any IMAP-compatible email server (Gmail, Outlook, etc.)
 - **Secure Authentication**: Uses environment variables for secure credential management
 - **MCP Compatible**: Works with Claude and other AI assistants that support the Model Context Protocol
-- **TypeScript**: Full TypeScript support with proper type definitions
+- **MCPB Compatible**: Easy integration with MCPB-compatible AI assistants like Claude Desktop
 
 ## Setup
 
