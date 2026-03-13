@@ -70,7 +70,7 @@ describe("main", () => {
 
     expect(McpServer).toHaveBeenCalledWith({
       name: "imap-mcp",
-      version: "1.0.0",
+      version: "1.1.0",
     })
 
     expect(ImapFlow).toHaveBeenCalledWith({

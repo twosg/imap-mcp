@@ -1,5 +1,14 @@
 #!/usr/bin/env node
 
+process.on("uncaughtException", (error) => {
+  console.error(`[imap-mcp] uncaughtException: ${error.stack ?? error.message}`)
+  process.exitCode = 1
+})
+process.on("unhandledRejection", (reason) => {
+  console.error(`[imap-mcp] unhandledRejection: ${reason}`)
+  process.exitCode = 1
+})
+
 import "dotenv/config"
 import { ImapFlow } from "imapflow"
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
@@ -15,7 +24,7 @@ import { registerSearchEmails } from "./tools/search-emails.js"
 
 const server = new McpServer({
   name: "imap-mcp",
-  version: "1.0.0",
+  version: "1.1.0",
 })
 
 function validateConfig(): {
@@ -70,7 +79,12 @@ export async function main(): Promise<void> {
   await server.connect(transport)
 }
 
-// Only run main if this file is executed directly (not imported)
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (!process.env.VITEST) {
+  console.error("[imap-mcp] starting...")
   main()
+    .then(() => console.error("[imap-mcp] server running"))
+    .catch((error: Error) => {
+      console.error(`[imap-mcp] fatal: ${error.message}`)
+      process.exitCode = 1
+    })
 }

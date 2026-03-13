@@ -1,4 +1,4 @@
-src/
+/src/
 *.test.js
 *.test.ts
 *.spec.js
