@@ -7,3 +7,8 @@ src/
 .github/
 .releaserc.json
 CLAUDE.md
+.idea/
+.claude/
+scripts/
+eslint.config.mjs
+vitest.config.ts
