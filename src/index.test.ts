@@ -9,6 +9,24 @@ vi.mock("imapflow")
 vi.mock("./tools/create-draft.js", () => ({
   registerCreateDraft: vi.fn(),
 }))
+vi.mock("./tools/flag-email.js", () => ({
+  registerFlagEmail: vi.fn(),
+}))
+vi.mock("./tools/list-emails.js", () => ({
+  registerListEmails: vi.fn(),
+}))
+vi.mock("./tools/list-mailboxes.js", () => ({
+  registerListMailboxes: vi.fn(),
+}))
+vi.mock("./tools/move-email.js", () => ({
+  registerMoveEmail: vi.fn(),
+}))
+vi.mock("./tools/read-email.js", () => ({
+  registerReadEmail: vi.fn(),
+}))
+vi.mock("./tools/search-emails.js", () => ({
+  registerSearchEmails: vi.fn(),
+}))
 
 describe("main", () => {
   const originalEnv = process.env

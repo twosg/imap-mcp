@@ -6,6 +6,12 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 
 import { registerCreateDraft } from "./tools/create-draft.js"
+import { registerFlagEmail } from "./tools/flag-email.js"
+import { registerListEmails } from "./tools/list-emails.js"
+import { registerListMailboxes } from "./tools/list-mailboxes.js"
+import { registerMoveEmail } from "./tools/move-email.js"
+import { registerReadEmail } from "./tools/read-email.js"
+import { registerSearchEmails } from "./tools/search-emails.js"
 
 const server = new McpServer({
   name: "imap-mcp",
@@ -53,6 +59,12 @@ export async function main(): Promise<void> {
   const client = new ImapFlow(imapConfig)
 
   registerCreateDraft(client, server)
+  registerFlagEmail(client, server)
+  registerListEmails(client, server)
+  registerListMailboxes(client, server)
+  registerMoveEmail(client, server)
+  registerReadEmail(client, server)
+  registerSearchEmails(client, server)
 
   const transport = new StdioServerTransport()
   await server.connect(transport)
