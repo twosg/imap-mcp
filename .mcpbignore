@@ -1,0 +1,9 @@
+src/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+.husky/
+.github/
+.releaserc.json
+CLAUDE.md

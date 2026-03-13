@@ -1,0 +1,119 @@
+{
+  "manifest_version": "0.4",
+  "name": "imap-mcp",
+  "display_name": "IMAP Email",
+  "version": "1.1.0",
+  "description": "Access and manage emails on any IMAP server — list, read, search, move, flag, and draft messages.",
+  "long_description": "A complete IMAP email interface for AI assistants. Connect to any IMAP-compatible email server (Gmail, Outlook, etc.) and manage your inbox: browse mailboxes, list and read emails, search by sender/subject/date, move messages between folders, manage flags, and create drafts.",
+  "author": {
+    "name": "Sven Geiß",
+    "email": "info@geissweb.de",
+    "url": "https://geissweb.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/twosg/imap-mcp.git"
+  },
+  "homepage": "https://github.com/twosg/imap-mcp#readme",
+  "support": "https://github.com/twosg/imap-mcp/issues",
+  "license": "MIT",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "IMAP_HOST": "${user_config.imap_host}",
+        "IMAP_PORT": "${user_config.imap_port}",
+        "IMAP_USERNAME": "${user_config.imap_username}",
+        "IMAP_PASSWORD": "${user_config.imap_password}",
+        "IMAP_USE_SSL": "${user_config.imap_use_ssl}",
+        "IMAP_REJECT_UNAUTHORIZED": "${user_config.imap_reject_unauthorized}",
+        "IMAP_DRAFTS_FOLDER": "${user_config.imap_drafts_folder}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "list-mailboxes",
+      "description": "List all available mailboxes on the IMAP server"
+    },
+    {
+      "name": "list-emails",
+      "description": "List the most recent emails from a mailbox"
+    },
+    {
+      "name": "read-email",
+      "description": "Read a single email message by UID"
+    },
+    {
+      "name": "search-emails",
+      "description": "Search for emails using filter criteria"
+    },
+    {
+      "name": "move-email",
+      "description": "Move an email to a different mailbox"
+    },
+    { "name": "flag-email", "description": "Add or remove flags on an email" },
+    { "name": "create-draft", "description": "Create a draft email message" }
+  ],
+  "user_config": {
+    "imap_host": {
+      "type": "string",
+      "title": "IMAP Host",
+      "description": "IMAP server hostname (e.g., imap.gmail.com)",
+      "required": true
+    },
+    "imap_port": {
+      "type": "number",
+      "title": "IMAP Port",
+      "description": "IMAP server port",
+      "default": 993,
+      "min": 1,
+      "max": 65535,
+      "required": false
+    },
+    "imap_username": {
+      "type": "string",
+      "title": "Username",
+      "description": "IMAP login username (usually your email address)",
+      "required": true
+    },
+    "imap_password": {
+      "type": "string",
+      "title": "Password",
+      "description": "IMAP login password or app-specific password",
+      "sensitive": true,
+      "required": true
+    },
+    "imap_use_ssl": {
+      "type": "boolean",
+      "title": "Use SSL/TLS",
+      "description": "Enable SSL/TLS encryption for the connection",
+      "default": true,
+      "required": false
+    },
+    "imap_reject_unauthorized": {
+      "type": "boolean",
+      "title": "Verify TLS Certificate",
+      "description": "Reject connections with invalid TLS certificates",
+      "default": true,
+      "required": false
+    },
+    "imap_drafts_folder": {
+      "type": "string",
+      "title": "Drafts Folder",
+      "description": "IMAP folder path for saving drafts (e.g., INBOX.Drafts)",
+      "default": "INBOX.Drafts",
+      "required": false
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "keywords": ["imap", "email", "mail", "inbox"]
+}

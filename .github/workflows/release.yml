@@ -51,6 +51,11 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npm run build
+      - name: Build MCPB bundle
+        run: |
+          npm prune --omit=dev
+          npx @anthropic-ai/mcpb pack .
+          npm install
       - run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

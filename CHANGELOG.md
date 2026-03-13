@@ -1,3 +1,13 @@
+# 1.1.0 (2026-03-13)
+
+
+### Features
+
+* 6 new IMAP tools: list-mailboxes, list-emails, read-email, search-emails, move-email, flag-email
+* MCPB bundle support with manifest.json and bundle script
+* Security hardening and migration to imapflow
+
+
 # 1.0.0 (2025-06-25)
 
 
